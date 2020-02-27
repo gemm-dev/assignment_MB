@@ -1,0 +1,80 @@
+# Q1: Given a sentence and set of query words, return the words present in the sentence and their word indices. The sentence will be all lowercase with no punctuation.
+
+sentence = "Can i book a haircut haircut and blowout tomorrow with sarah"
+#            0  1  2   3   4        5     6     7       8      9     10
+            
+queries = ['haircut', 'blowout', 'dog', 'sarah']
+
+expected_result = [('haircut', 4), ('haircut', 5), ('blowout', 7), ('sarah', 10)]
+
+def find_query(sentence, queries):
+    result=[]
+    mydict={}
+    #put each word into dictionary with index as key
+    for i in range(len(sentence.split())):
+        mydict[i]=sentence.split()[i]
+    #add each query and index to result list
+    for k,v in mydict.items():
+        if v in queries:
+            result.append((v,k))
+    return result
+
+# Q2. Now there are misspellings. We provide a helper function similarity() that you are free to use. Feel free to copy/paste from the previouos section.
+
+def similarity(word1, word2):
+    # return a similarity score from 0 to 1
+    # we consider the words similar if the score is > 0.8
+    return float(len(set(word1).intersection(word2))) / len(set(word1).union(word2))
+
+sentence = "Can i book a haircut and blowoutt tomorrow with sarah"
+#            0  1  2   3   4      5     6        7      8     9
+            
+queries = ['haircut', 'blowout', 'dog', 'sarah']
+
+expected_result = [('haircut', 4), ('blowout', 6), ('sarah', 9)]
+
+def find_query(sentence, queries):
+    result=[]
+    mydict={}
+    clean_sentence=sentence.split()
+    #replace words in sentence with similar words from query
+    for i in range(len(clean_sentence)):
+        for q in queries:
+            if similarity(clean_sentence[i],q)>.8:
+                clean_sentence[i]=q
+    #same as part 1
+    for i in range(len(clean_sentence)):
+        mydict[i]=clean_sentence[i]
+    for k,v in mydict.items():
+        if v in queries:
+            result.append((v,k))
+    return result
+
+# Q3: Now query terms can N words long, for example "blow out". Feel free to copy/paste from the previous section.
+
+sentence = "Can i book a haircut and blow outt tomorrow with sarah"
+#            0  1  2   3   4      5   6     7     8      9    10
+            
+queries = ['haircut', 'blow out', 'dog', 'sarah']
+
+expected_result = [('haircut', 4), ('blow out', 6), ('sarah', 10)]
+
+
+def find_query(sentence, queries):
+    result=[]
+    mydict={}
+    clean_sentence=sentence.split()
+    #replace words and phrases with similar items from query
+    for i in range(len(clean_sentence)):
+        for q in queries:
+            N=len(q.split()) #number of words in the query
+            words=' '.join(clean_sentence[i:i+N]) #word or phrase of same length as query
+            if similarity(words,q)>.8:
+                clean_sentence[i]=q
+    #same as part 1, 2
+    for i in range(len(clean_sentence)):
+        mydict[i]=clean_sentence[i]
+    for k,v in mydict.items():
+        if v in queries:
+            result.append((v,k))
+    return result
